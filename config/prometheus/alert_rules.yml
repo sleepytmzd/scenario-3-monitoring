@@ -1,0 +1,19 @@
+groups:
+  - name: app_alerts
+    rules:
+      - alert: HighCPUUsage
+        expr: avg_over_time(app_cpu_usage_percent[1m]) > 70
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Application CPU usage above 70% for over a minute."
+          description: "CPU usage for job {{ $labels.job }} at {{ $value | printf \"%.2f\" }}%."
+      - alert: AppUnhealthy
+        expr: up{job="demo_app"} == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Demo application is not responding."
+          description: "Prometheus cannot reach the demo_app target."
